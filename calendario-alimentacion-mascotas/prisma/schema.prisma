@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Modelos requeridos por NextAuth.js
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  // Relaciones de la app
+  families       FamilyMember[]
+  feedingRecords FeedingRecord[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Modelos propios de la aplicación
+
+model Family {
+  id          String   @id @default(cuid())
+  name        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members FamilyMember[]
+  pets    Pet[]
+}
+
+model FamilyMember {
+  id        String   @id @default(cuid())
+  userId    String
+  familyId  String
+  role      String   @default("MEMBER") // Puede ser "ADMIN" o "MEMBER"
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  family Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, familyId])
+}
+
+model Pet {
+  id        String   @id @default(cuid())
+  name      String
+  species   String?  // Ej: Perro, Gato
+  image     String?
+  familyId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  family         Family          @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  feedingRecords FeedingRecord[]
+}
+
+model FeedingRecord {
+  id        String   @id @default(cuid())
+  petId     String
+  userId    String
+  fedAt     DateTime @default(now())
+  notes     String?
+
+  pet  Pet  @relation(fields: [petId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
