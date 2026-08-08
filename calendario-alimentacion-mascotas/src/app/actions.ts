@@ -48,7 +48,7 @@ export async function addPet(familyId: string, formData: FormData) {
   revalidatePath("/dashboard");
 }
 
-export async function feedPet(petId: string) {
+export async function feedPet(petId: string, note?: string) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) throw new Error("Unauthorized");
 
@@ -56,6 +56,7 @@ export async function feedPet(petId: string) {
     data: {
       petId,
       userId: session.user.id,
+      notes: note || null,
     }
   });
 

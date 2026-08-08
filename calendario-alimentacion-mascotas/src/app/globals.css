@@ -95,3 +95,28 @@ body {
   padding: 2rem;
   width: 100%;
 }
+/* Responsive: calendar layout stacks on mobile */
+@media (max-width: 768px) {
+  /* The dashboard grid becomes a single column */
+  .calendar-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Input focus ring */
+input:focus, textarea:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 1px;
+}
+
+/* Disabled button */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Calendar day hover effect */
+.calendar-day:hover {
+  background: rgba(255,255,255,0.08) !important;
+  transform: scale(1.05);
+}
