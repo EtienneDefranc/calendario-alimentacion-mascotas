@@ -1,22 +1,32 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
+/* ——————————————————————
+   DESIGN TOKENS
+—————————————————————— */
 :root {
-  --primary-color: #6366f1; /* Indigo */
+  --primary-color: #6366f1;
   --primary-hover: #4f46e5;
-  --secondary-color: #f43f5e; /* Rose */
-  --bg-color: #0f172a; /* Slate 900 for dark mode */
-  --card-bg: rgba(30, 41, 59, 0.7); /* Slate 800 with opacity for glassmorphism */
+  --secondary-color: #f43f5e;
+  --bg-color: #0f172a;
+  --card-bg: rgba(30, 41, 59, 0.7);
   --card-border: rgba(255, 255, 255, 0.1);
   --text-color: #f8fafc;
   --text-muted: #94a3b8;
   --success: #10b981;
+  --warning: #f59e0b;
+  --sidebar-width: 320px;
 }
 
-* {
+/* ——————————————————————
+   RESET & BASE
+—————————————————————— */
+*, *::before, *::after {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
 }
+
+html { scroll-behavior: smooth; }
 
 body {
   font-family: 'Inter', sans-serif;
@@ -25,39 +35,45 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-image: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent 40%),
-                    radial-gradient(circle at bottom left, rgba(244, 63, 94, 0.1), transparent 40%);
+  background-image:
+    radial-gradient(circle at 80% 10%, rgba(99, 102, 241, 0.18), transparent 45%),
+    radial-gradient(circle at 10% 90%, rgba(244, 63, 94, 0.12), transparent 45%);
   background-attachment: fixed;
 }
 
-/* Glassmorphism utility */
+/* ——————————————————————
+   GLASSMORPHISM
+—————————————————————— */
 .glass {
   background: var(--card-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--card-border);
   border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.15);
 }
 
-/* Buttons */
+/* ——————————————————————
+   BUTTONS
+—————————————————————— */
 .btn-primary {
   background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
   color: white;
   border: none;
   padding: 12px 24px;
-  border-radius: 9999px; /* Pill shape */
+  border-radius: 9999px;
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.15s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  font-family: 'Inter', sans-serif;
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.5);
 }
@@ -71,52 +87,125 @@ body {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
 }
 
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.2);
+.btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Layout */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  width: 100%;
-}
-/* Responsive: calendar layout stacks on mobile */
-@media (max-width: 768px) {
-  /* The dashboard grid becomes a single column */
-  .calendar-layout {
-    grid-template-columns: 1fr !important;
-  }
-}
-
-/* Input focus ring */
+/* ——————————————————————
+   INPUTS
+—————————————————————— */
 input:focus, textarea:focus {
   outline: 2px solid var(--primary-color);
   outline-offset: 1px;
 }
 
-/* Disabled button */
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+/* ——————————————————————
+   ANIMATIONS
+—————————————————————— */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Calendar day hover effect */
-.calendar-day:hover {
-  background: rgba(255,255,255,0.08) !important;
-  transform: scale(1.05);
+.animate-fade-in {
+  animation: fadeIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ——————————————————————
+   LAYOUT SHELL
+—————————————————————— */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  width: 100%;
+}
+
+/* ——————————————————————
+   DASHBOARD LAYOUT
+—————————————————————— */
+.dashboard-root {
+  width: 100%;
+}
+
+/* Mobile-only header row (tabs + sidebar toggle) */
+.mobile-header {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: nowrap;
+}
+
+/* Desktop family tabs */
+.desktop-tabs {
+  display: flex;
+}
+
+/* Two-column grid on desktop */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr var(--sidebar-width);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.calendar-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.sidebar-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ——————————————————————
+   RESPONSIVE — TABLET
+—————————————————————— */
+@media (max-width: 900px) {
+  :root { --sidebar-width: 270px; }
+}
+
+/* ——————————————————————
+   RESPONSIVE — MOBILE
+—————————————————————— */
+@media (max-width: 680px) {
+  .container { padding: 0.85rem; }
+
+  /* Show mobile header, hide desktop tabs */
+  .mobile-header  { display: flex; }
+  .desktop-tabs   { display: none !important; }
+
+  /* Stack calendar and sidebar */
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Sidebar hidden by default on mobile */
+  .sidebar-column {
+    display: none;
+  }
+
+  /* Shown when toggle is pressed */
+  .sidebar-open {
+    display: flex;
+  }
+
+  /* Dashboard root gets extra bottom padding */
+  .dashboard-root { padding-bottom: 2rem; }
 }
